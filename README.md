@@ -29,7 +29,7 @@ sakurapai/ │── admin/          # Panel admin │── assets/         # F
 ## 🚀 Cara Menjalankan  
 1. Clone repository  
    ```bash
-   git clone https://github.com/USERNAME/sakurapai.git
+   git clone https://github.com/sternnaufal/sakurapai.git
 
 2. Import database dari file sakurapai.sql ke MySQL
 
@@ -59,3 +59,4 @@ Naufal Rakha Putra
 🌍 SMKN 1 Bukittinggi
 
 💻 Web Programmer | React.js Enthusiast
+
