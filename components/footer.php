@@ -1,25 +1,55 @@
-<footer style="background-color: black; color: white; padding: 40px 0; text-align: center; font-family: 'Comic Sans MS', sans-serif;">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <h5 style="color: #ff66b2;">Tentang Sakurapai</h5>
-                <p style="font-size: 16px;">Sakurapai adalah platform video yang menghadirkan konten anime terbaru dengan pengalaman menonton yang menyenangkan dan mudah. Kami menawarkan berbagai video dengan fitur seperti komentar, like/dislike, dan konten premium yang menggemaskan!</p>
-            </div>
-            <div class="col-md-4">
-                <h5 style="color: #ff66b2;">Kontak Kami</h5>
-                <ul style="list-style-type: none; padding: 0;">
-                    <li style="font-size: 16px;">Email: <a href="mailto:contact@sakurapai.com" style="color: #ff66b2; text-decoration: none;">contact@sakurapai.com</a></li>
-                    <li style="font-size: 16px;">Telepon: (123) 456-7890</li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h5 style="color: #ff66b2;">Ikuti Kami</h5>
-                <ul style="list-style-type: none; padding: 0;">
-                    <li><a href="https://github.com/sternnaufal/sakurapai" style="color: #ff66b2; font-size: 20px;"><i class="fab fa-github"></i> Github</a></li>
-                </ul>
-            </div>
-        </div>
-        <hr style="border: 1px solid #ff66b2; width: 50%; margin: 20px auto;">
-        <p style="font-size: 14px;">&copy; 2024 Sakurapai. Semua hak cipta dilindungi. <span style="font-size: 20px;">🌸</span></p>
+<footer class="bg-black text-white py-10 font-sans">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      <!-- Tentang -->
+      <div>
+        <h5 class="text-sakura-500 text-xl font-bold mb-3">Tentang Sakurapai</h5>
+        <p class="text-gray-300 text-base leading-relaxed">
+          Sakurapai adalah platform video yang menghadirkan konten anime terbaru dengan pengalaman menonton yang menyenangkan dan mudah. Kami menawarkan berbagai video dengan fitur seperti komentar, like/dislike, dan konten premium yang menggemaskan!
+        </p>
+      </div>
+
+      <!-- Kontak -->
+      <div>
+        <h5 class="text-sakura-500 text-xl font-bold mb-3">Kontak Kami</h5>
+        <ul class="space-y-2 text-gray-300 text-base">
+          <li>
+            <i class="fas fa-envelope text-sakura-400 mr-2"></i>
+            <a href="mailto:contact@sakurapai.com" class="text-sakura-400 hover:underline">
+              contact@sakurapai.com
+            </a>
+          </li>
+          <li class="flex items-center">
+            <i class="fas fa-phone text-sakura-400 mr-2"></i>
+            (123) 456-7890
+          </li>
+        </ul>
+      </div>
+
+      <!-- Ikuti Kami -->
+      <div>
+        <h5 class="text-sakura-500 text-xl font-bold mb-3">Ikuti Kami</h5>
+        <ul class="space-y-2">
+          <li>
+            <a 
+              href="https://github.com/sternnaufal/sakurapai" 
+              class="inline-flex items-center text-sakura-400 hover:text-sakura-300 text-lg font-medium"
+              target="_blank"
+            >
+              <i class="fab fa-github mr-2"></i> GitHub
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
+
+    <!-- Divider -->
+    <div class="w-1/2 h-px bg-sakura-500 mx-auto my-6"></div>
+
+    <!-- Copyright -->
+    <p class="text-gray-400 text-sm text-center">
+      &copy; <?= date('Y') ?> Sakurapai. Semua hak cipta dilindungi. 
+      <span class="text-sakura-400 text-lg ml-1">🌸</span>
+    </p>
+  </div>
 </footer>
