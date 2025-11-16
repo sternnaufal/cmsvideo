@@ -3,7 +3,7 @@ session_start();
 include '../../components/db.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../pages/login.php");
+    header("Location: ../../pages/login.php");
     exit;
 }
 
@@ -18,8 +18,5 @@ $user = $result->fetch_assoc();
 if (!$user || !$user['is_admin']) {
     echo "Akses ditolak. Hanya admin yang dapat mengakses halaman ini.";
     exit;
-}
-if ($user['is_admin']){
-    echo "Admin!";
 }
 ?>

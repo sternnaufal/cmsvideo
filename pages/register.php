@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ss", $username, $password);
         if ($stmt->execute()) {
-            $success_message = "Registrasi berhasil! <a href='login.php'>Login di sini</a>";
+            $success_message = "Registrasi berhasil!";
             $show_modal = 'success'; // Set modal untuk sukses
         } else {
             $error_message = "Terjadi kesalahan. Silakan coba lagi.";
@@ -34,114 +34,222 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrasi</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../components/styles.css">
-    <link rel="icon" href="assets/sakurapai.png" type="image/png">
+    <!-- ✅ Tailwind v4 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- ✅ Font Inter (Linux-friendly) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- ✅ Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="../assets/sakurapai.png" type="image/png">
+
+    <!-- ✅ @theme — konsisten dengan index.php -->
+    <style type="text/tailwindcss">
+      @theme {
+        --font-sans: 'Inter', system-ui, Ubuntu, Roboto, sans-serif;
+        --color-sakura-500: #ff7d92;
+        --color-sakura-400: #ff99ab;
+        --color-sakura-600: #ff5c79;
+        --color-success-500: #2ecc71;
+        --color-danger-500: #e74c3c;
+        --color-gray-950: #0a0a0a;
+        --color-gray-900: #111827;
+        --color-gray-800: #1f2937;
+        --radius-xl: 1rem;
+      }
+    </style>
+
+    <!-- ✅ Modal & Fade-in styles -->
+    <style>
+      .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 50; }
+      .modal { display: none; position: fixed; inset: 0; z-index: 60; padding: 1rem; align-items: center; justify-content: center; }
+      .fade-in { animation: fadeIn 0.6s ease-out; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
-<body>
-    <?php include '../components/navbar.php'; ?>
+<body class="bg-black text-white font-sans">
 
-    <!-- Modal Username Sudah Terdaftar -->
-<div class="modal fade" id="usernameExistsModal" tabindex="-1" aria-labelledby="usernameExistsModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="background-color: black; color: white;">
-            <div class="modal-header" style="background-color: #333;">
-                <h5 class="modal-title" id="usernameExistsModalLabel">Peringatan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <?php echo isset($error_message) ? $error_message : ''; ?>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-pink" data-bs-dismiss="modal">Tutup</button>
-            </div>
-        </div>
+  <?php include '../components/navbar.php'; ?>
+
+  <!-- ✅ Modal: Username Exists -->
+  <div id="usernameExistsModalBackdrop" class="modal-backdrop"></div>
+  <div id="usernameExistsModal" class="modal">
+    <div class="bg-gray-900 border border-gray-700 rounded-xl w-full max-w-md p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h5 class="text-lg font-bold text-gray-200">Peringatan</h5>
+        <button id="closeUsernameModal" class="text-gray-400 hover:text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="text-gray-300 mb-5">
+        <?= htmlspecialchars($error_message) ?: 'Username sudah terdaftar.' ?>
+      </div>
+      <div class="text-right">
+        <button id="closeUsernameModalBtn" 
+                class="px-4 py-2 bg-sakura-500 text-black font-medium rounded-lg hover:bg-sakura-400 transition">
+          Tutup
+        </button>
+      </div>
     </div>
-</div>
+  </div>
 
-<!-- Modal Registrasi Gagal -->
-<div class="modal fade" id="failedModal" tabindex="-1" aria-labelledby="failedModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="background-color: black; color: white;">
-            <div class="modal-header" style="background-color: #c0392b;">
-                <h5 class="modal-title" id="failedModalLabel">Registrasi Gagal</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <?php echo isset($error_message) ? $error_message : ''; ?>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
-            </div>
-        </div>
+  <!-- ✅ Modal: Failed -->
+  <div id="failedModalBackdrop" class="modal-backdrop"></div>
+  <div id="failedModal" class="modal">
+    <div class="bg-gray-900 border border-danger-500 rounded-xl w-full max-w-md p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h5 class="text-lg font-bold text-danger-400">Registrasi Gagal</h5>
+        <button id="closeFailedModal" class="text-gray-400 hover:text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="text-gray-300 mb-5">
+        <?= htmlspecialchars($error_message) ?: 'Terjadi kesalahan. Silakan coba lagi.' ?>
+      </div>
+      <div class="text-right">
+        <button id="closeFailedModalBtn" 
+                class="px-4 py-2 bg-danger-500 text-white font-medium rounded-lg hover:bg-danger-400 transition">
+          Tutup
+        </button>
+      </div>
     </div>
-</div>
+  </div>
 
-<!-- Modal Registrasi Berhasil -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="background-color: black; color: white;">
-            <div class="modal-header" style="background-color: #2ecc71;">
-                <h5 class="modal-title" id="successModalLabel">Registrasi Berhasil!</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <?php echo isset($success_message) ? $success_message : ''; ?>
-            </div>
-            <div class="modal-footer">
-                <a href="login.php" class="btn btn-success">Login di sini</a>
-            </div>
-        </div>
+  <!-- ✅ Modal: Success -->
+  <div id="successModalBackdrop" class="modal-backdrop"></div>
+  <div id="successModal" class="modal">
+    <div class="bg-gray-900 border border-success-500 rounded-xl w-full max-w-md p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h5 class="text-lg font-bold text-success-400">Registrasi Berhasil!</h5>
+        <button id="closeSuccessModal" class="text-gray-400 hover:text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="text-gray-300 mb-5">
+        <?= htmlspecialchars($success_message) ?: 'Akun berhasil dibuat. Silakan login.' ?>
+      </div>
+      <div class="text-right">
+        <a href="login.php" 
+           class="px-4 py-2 bg-success-500 text-white font-medium rounded-lg hover:bg-success-400 transition">
+          Login di sini
+        </a>
+      </div>
     </div>
-</div>
+  </div>
 
-
-    <!-- Konten Registrasi -->
-    <div class="container mt-5 fade-in">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <form action="register.php" method="POST" class="mt-4 p-4 rounded shadow" style="background-color: #1c1c1c;">
-                    <h1 class="text-center" style="color: pink;">Register</h1>
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" id="username" name="username" class="form-control" placeholder="Masukkan Username" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan Password" required>
-                    </div>
-                    <button type="submit" class="btn btn-pink w-100">Daftar</button>
-                </form>
-                <p class="mt-3 text-center">Sudah memiliki akun? <a href="login.php">Login di sini</a></p>
-            </div>
-        </div>
+  <!-- ✅ Form Registrasi -->
+  <div class="container mx-auto mt-8 px-4 fade-in">
+    <div class="max-w-md mx-auto">
+      <div class="bg-gray-900/70 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-xl border border-sakura-500/20">
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-sakura-400 mb-6">Register</h1>
+        <form action="register.php" method="POST">
+          <div class="mb-5">
+            <label for="username" class="block text-gray-300 mb-2 font-medium">Username</label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username" 
+              class="w-full px-4 py-3 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-sakura-500/50"
+              placeholder="Masukkan Username"
+              required
+            >
+          </div>
+          <div class="mb-6">
+            <label for="password" class="block text-gray-300 mb-2 font-medium">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="w-full px-4 py-3 bg-gray-800 text-white rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-sakura-500/50"
+              placeholder="Masukkan Password"
+              required
+            >
+          </div>
+          <button 
+            type="submit" 
+            class="w-full py-3 bg-gradient-to-r from-sakura-500 to-sakura-600 text-black font-bold rounded-xl shadow-lg hover:from-sakura-400 hover:to-sakura-500 transition-all duration-200"
+          >
+            Daftar
+          </button>
+        </form>
+        <p class="mt-5 text-center text-gray-400">
+          Sudah punya akun? 
+          <a href="login.php" class="text-sakura-400 hover:underline font-medium">Login di sini</a>
+        </p>
+      </div>
     </div>
+  </div>
 
-    <!-- Bootstrap Script -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+  <!-- ✅ JS Modal Control -->
+  <script>
+    // Modal controllers
+    const modals = {
+      username: {
+        backdrop: document.getElementById('usernameExistsModalBackdrop'),
+        modal: document.getElementById('usernameExistsModal'),
+        closeBtns: [
+          document.getElementById('closeUsernameModal'),
+          document.getElementById('closeUsernameModalBtn')
+        ]
+      },
+      failed: {
+        backdrop: document.getElementById('failedModalBackdrop'),
+        modal: document.getElementById('failedModal'),
+        closeBtns: [
+          document.getElementById('closeFailedModal'),
+          document.getElementById('closeFailedModalBtn')
+        ]
+      },
+      success: {
+        backdrop: document.getElementById('successModalBackdrop'),
+        modal: document.getElementById('successModal'),
+        closeBtns: [
+          document.getElementById('closeSuccessModal')
+        ]
+      }
+    };
 
-    <!-- Show Modal Based on Condition -->
-    <script>
-        <?php if (isset($show_modal)) { ?>
-            var showModal = '<?php echo $show_modal; ?>';
-            if (showModal === 'username_exists') {
-                var usernameExistsModal = new bootstrap.Modal(document.getElementById('usernameExistsModal'));
-                usernameExistsModal.show();
-            } else if (showModal === 'failed') {
-                var failedModal = new bootstrap.Modal(document.getElementById('failedModal'));
-                failedModal.show();
-            } else if (showModal === 'success') {
-                var successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                successModal.show();
-            }
-        <?php } ?>
-    </script>
+    function openModal(name) {
+      const m = modals[name];
+      if (m && m.backdrop && m.modal) {
+        m.backdrop.style.display = 'block';
+        m.modal.style.display = 'flex';
+        document.body.classList.add('modal-open');
+      }
+    }
+
+    function closeModal(name) {
+      const m = modals[name];
+      if (m && m.backdrop && m.modal) {
+        m.backdrop.style.display = 'none';
+        m.modal.style.display = 'none';
+        document.body.classList.remove('modal-open');
+      }
+    }
+
+    // Assign close handlers
+    Object.keys(modals).forEach(name => {
+      const m = modals[name];
+      m.closeBtns.forEach(btn => {
+        btn?.addEventListener('click', () => closeModal(name));
+      });
+      m.backdrop?.addEventListener('click', () => closeModal(name));
+    });
+
+    // Auto-open modal berdasarkan PHP
+    <?php if ($show_modal === 'username_exists'): ?>
+      openModal('username');
+    <?php elseif ($show_modal === 'failed'): ?>
+      openModal('failed');
+    <?php elseif ($show_modal === 'success'): ?>
+      openModal('success');
+    <?php endif; ?>
+  </script>
+
 </body>
 </html>

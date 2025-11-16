@@ -13,18 +13,43 @@ $result_categories = mysqli_query($conn, $sql_categories);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kategori - Sakurapai</title>
     <link rel="stylesheet" href="../components/styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
+<!-- ✅ Tailwind v4 (CDN resmi) -->
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<!-- ✅ Font Inter (Linux-friendly) -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- ✅ Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style type="text/tailwindcss">
+      @theme {
+        --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, sans-serif;
+
+        --color-sakura-500: #ff7d92;
+        --color-sakura-400: #ff99ab;
+        --color-sakura-600: #ff5c79;
+        --color-sakura-300: #ffa3d1;
+
+        --color-gray-900: #111827;
+        --color-gray-800: #1f2937;
+        --color-gray-700: #374151;
+
+        --radius-lg: 0.75rem;   /* 12px */
+        --radius-xl: 1rem;      /* 16px */
+        --radius-2xl: 1.25rem;  /* 20px */
+        
+    --shadow-sticky: 0 4px 12px -2px rgba(0,0,0,0.3), 0 8px 16px -4px rgba(255,102,178,0.1);
+      }
+    </style>
 </head>
 <body style='background-color:black;'>
     <?php include '../components/navbar.php' ?>
-    <div class="container mt-5 bg-dark">
+    <div class="container mt-5">
     <?php if (!isset($_GET['category_id'])): ?>
         <!-- Menampilkan daftar kategori jika tidak ada kategori yang dipilih -->
         <h1 class="text-center text-white">Daftar Kategori</h1>
-        <div class="row mt-4 bg-dark">
+        <div class="grid grid-cols-4 gap-4">
             <?php while ($category = mysqli_fetch_assoc($result_categories)): ?>
-                <div class="col-md-3 mb-3">
-                    <div class="card" style='background-color : black;'>
+                <div class="bg-sakura-400 rounded shadow h-30">
+                    <div class="card">
                         <div class="card-body text-white">
                             <h5 class="card-title"><?= htmlspecialchars($category['name']) ?></h5>
                             <a href="category.php?category_id=<?= $category['id'] ?>" style='background-color:black; color:pink;' class="btn btn-pink btn-sm">Lihat Judul</a>

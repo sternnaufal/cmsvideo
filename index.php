@@ -34,6 +34,8 @@ include 'components/function.php';
         --radius-lg: 0.75rem;   /* 12px */
         --radius-xl: 1rem;      /* 16px */
         --radius-2xl: 1.25rem;  /* 20px */
+        
+    --shadow-sticky: 0 4px 12px -2px rgba(0,0,0,0.3), 0 8px 16px -4px rgba(255,102,178,0.1);
       }
     </style>
     <!-- ✅ Custom styles (hanya yang tidak bisa di-handle @theme) -->
@@ -53,56 +55,106 @@ include 'components/function.php';
     </style>
 </head>
 <body class="bg-black text-white font-sans">
-  <!-- Navbar -->
-  <nav class="bg-gray-900 py-3 px-4">
-    <div class="container mx-auto flex items-center justify-between">
-      <a href="index.php" class="text-xl font-bold text-white">Sakurapai</a>
+   <!-- ✅ Navbar — versi premium sticky (disamakan) -->
+  <nav class="sticky top-0 z-50 bg-gray-950 border-b border-sakura-500/20 backdrop-blur-md shadow-[var(--shadow-sticky)]">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <!-- Logo -->
+        <a href="index.php" class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-sakura-300 bg-clip-text text-transparent hover:opacity-90 transition-opacity">
+          Sakurapai
+        </a>
 
-      <button id="mobileMenuButton" class="md:hidden text-white">
-        <i class="fas fa-bars text-xl"></i>
-      </button>
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-2 md:gap-4 ms-auto">
+          <?php if ($user_name): ?>
+            <!-- User Badge -->
+            <div class="flex items-center gap-3 px-4 py-2.5 bg-gray-800/70 backdrop-blur-sm rounded-xl border border-sakura-500/30 shadow-sm">
+              <div class="w-8 h-8 rounded-full bg-sakura-500/20 flex items-center justify-center">
+                <i class="fas fa-user-circle text-sakura-400 text-lg"></i>
+              </div>
+              <span class="text-white font-medium">
+                Hi, <span class="text-sakura-400 font-semibold"><?= htmlspecialchars($user_name) ?></span>!
+              </span>
+            </div>
 
-      <div id="navbarNav" class="hidden md:flex gap-4 ms-auto items-center">
-        <?php if ($user_name): ?>
-          <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-700 rounded font-medium">
-            <i class="fas fa-user-circle text-sakura-400"></i>
-            Hi, <?= htmlspecialchars($user_name) ?>!
-          </div>
-          <?php if ($is_admin): ?>
-            <a href="admin/views/dashboard.php" class="text-white hover:text-sakura-400 font-medium">Dashboard</a>
+            <a href="pages/category.php" class="px-4 py-2.5 text-white font-medium rounded-xl bg-gray-800/50 hover:bg-sakura-500/10 hover:text-sakura-300 transition-all duration-200 border border-transparent hover:border-sakura-500/30">
+              Category List
+            </a>
+
+            <!-- Links -->
+            <?php if ($is_admin): ?>
+              <a href="admin/views/dashboard.php" class="px-4 py-2.5 text-white font-medium rounded-xl bg-gray-800/50 hover:bg-sakura-500/10 hover:text-sakura-300 transition-all duration-200 border border-transparent hover:border-sakura-500/30">
+                Dashboard
+              </a>
+            <?php endif; ?>
+
+            <a href="pages/donate.php" class="px-4 py-2.5 text-white font-medium rounded-xl bg-gray-800/50 hover:bg-sakura-500/10 hover:text-sakura-300 transition-all duration-200 border border-transparent hover:border-sakura-500/30">
+              Donasi
+            </a>
+
+            <?php if (!$is_premium): ?>
+              <a href="premium.php" class="px-4 py-2.5 bg-gradient-to-r from-sakura-500 to-sakura-600 text-black font-bold rounded-xl hover:from-sakura-400 hover:to-sakura-500 shadow-lg hover:shadow-sakura-500/30 transition-all duration-200 animate-pulse">
+                🌟 Upgrade Akun!
+              </a>
+            <?php endif; ?>
+
+            <a href="pages/logout.php" class="px-4 py-2.5 text-white font-medium rounded-xl bg-gray-800/50 hover:bg-red-500/20 hover:text-red-300 transition-all duration-200 border border-transparent hover:border-red-500/30">
+              Logout
+            </a>
+          <?php else: ?>
+            <a href="pages/register.php" class="px-4 py-2.5 text-white font-medium rounded-xl bg-gray-800/50 hover:bg-sakura-500/10 hover:text-sakura-300 transition-all duration-200 border border-transparent hover:border-sakura-500/30">
+              Daftar
+            </a>
+            <a href="pages/login.php" class="px-4 py-2.5 bg-gradient-to-r from-sakura-500 to-sakura-600 text-black font-bold rounded-xl hover:from-sakura-400 hover:to-sakura-500 shadow-lg hover:shadow-sakura-500/30 transition-all duration-200">
+              Login
+            </a>
           <?php endif; ?>
-          <a href="pages/donate.php" class="text-white hover:text-sakura-400 font-medium">Donasi</a>
-          <?php if (!$is_premium): ?>
-            <a href="premium.php" class="text-white hover:text-sakura-400 font-medium">Upgrade Akun!</a>
-          <?php endif; ?>
-          <a href="pages/logout.php" class="text-white hover:text-sakura-400 font-medium">Logout</a>
-        <?php else: ?>
-          <a href="pages/register.php" class="text-white hover:text-sakura-400 font-medium">Daftar</a>
-          <a href="pages/login.php" class="text-white hover:text-sakura-400 font-medium">Login</a>
-        <?php endif; ?>
+        </div>
+
+        <!-- Mobile Trigger -->
+        <button 
+          id="mobileMenuButton" 
+          class="md:hidden text-white p-2.5 rounded-lg hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-sakura-500"
+          aria-label="Toggle menu"
+        >
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
       </div>
     </div>
   </nav>
 
-  <!-- Mobile Menu -->
-  <div id="mobileMenu" class="md:hidden hidden bg-gray-800 p-4 flex flex-col gap-2 text-sm">
-    <?php if ($user_name): ?>
-      <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-700 rounded font-medium">
-        <i class="fas fa-user-circle text-sakura-400"></i>
-        Hi, <?= htmlspecialchars($user_name) ?>!
+  <!-- ✅ Mobile Menu (Full-Screen Drawer) -->
+  <div id="mobileMenuBackdrop" class="fixed inset-0 bg-black/60 z-55 hidden transition-opacity duration-200"></div>
+  <div id="mobileMenu" class="fixed inset-y-0 right-0 w-4/5 max-w-xs bg-gray-950 border-l border-sakura-500/20 shadow-2xl z-55 transform translate-x-full transition-transform duration-300 ease-in-out">
+    <div class="flex flex-col h-full p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold text-white">Menu</h3>
+        <button id="closeMobileMenu" class="text-gray-400 hover:text-white p-1.5 rounded-full hover:bg-gray-800" aria-label="Close menu">
+          <i class="fas fa-times text-xl"></i>
+        </button>
       </div>
-      <?php if ($is_admin): ?>
-        <a href="admin/views/dashboard.php" class="text-white hover:text-sakura-400">Dashboard</a>
-      <?php endif; ?>
-      <a href="pages/donate.php" class="text-white hover:text-sakura-400">Donasi</a>
-      <?php if (!$is_premium): ?>
-        <a href="premium.php" class="text-white hover:text-sakura-400">Upgrade Akun!</a>
-      <?php endif; ?>
-      <a href="pages/logout.php" class="text-white hover:text-sakura-400">Logout</a>
-    <?php else: ?>
-      <a href="pages/register.php" class="text-white hover:text-sakura-400">Daftar</a>
-      <a href="pages/login.php" class="text-white hover:text-sakura-400">Login</a>
-    <?php endif; ?>
+      <nav class="flex flex-col gap-4 flex-1">
+        <?php if ($user_name): ?>
+          <div class="flex items-center gap-3 p-3 bg-gray-800/50 rounded-xl">
+            <div class="w-10 h-10 rounded-full bg-sakura-500/20 flex items-center justify-center">
+              <i class="fas fa-user-circle text-sakura-400 text-xl"></i>
+            </div>
+            <span class="text-white font-medium">Hi, <span class="text-sakura-400"><?= htmlspecialchars($user_name) ?></span>!</span>
+          </div>
+          <?php if ($is_admin): ?>
+            <a href="admin/views/dashboard.php" class="text-white hover:text-sakura-300 py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors font-medium border-l-2 border-transparent hover:border-sakura-500">Dashboard</a>
+          <?php endif; ?>
+          <a href="pages/donate.php" class="text-white hover:text-sakura-300 py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors font-medium border-l-2 border-transparent hover:border-sakura-500">Donasi</a>
+          <?php if (!$is_premium): ?>
+            <a href="premium.php" class="bg-gradient-to-r from-sakura-500 to-sakura-600 text-black font-bold py-3 px-4 rounded-lg shadow hover:shadow-sakura-500/30 transition-all">🌟 Upgrade Akun!</a>
+          <?php endif; ?>
+          <a href="pages/logout.php" class="text-white hover:text-red-300 py-3 px-4 rounded-lg hover:bg-red-500/10 transition-colors font-medium border-l-2 border-transparent hover:border-red-500">Logout</a>
+        <?php else: ?>
+          <a href="pages/register.php" class="text-white hover:text-sakura-300 py-3 px-4 rounded-lg hover:bg-gray-800 transition-colors font-medium border-l-2 border-transparent hover:border-sakura-500">Daftar</a>
+          <a href="pages/login.php" class="bg-gradient-to-r from-sakura-500 to-sakura-600 text-black font-bold py-3 px-4 rounded-lg shadow hover:shadow-sakura-500/30 transition-all">Login</a>
+        <?php endif; ?>
+      </nav>
+    </div>
   </div>
 
   <!-- Welcome Modal -->
@@ -269,7 +321,7 @@ include 'components/function.php';
     </div>
 
     <!-- Mascot (desktop only) -->
-    <div class="hidden md:block w-60 flex-shrink-0">
+    <div class="hidden md:block w-50 flex-shrink-0">
       <img src="components/sakurapai.png" alt="Maskot" class="w-full h-auto drop-shadow-lg">
     </div>
   </div>
