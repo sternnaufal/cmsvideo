@@ -2,7 +2,7 @@
 require_once '../components/db.php'; // Pastikan koneksi database
 session_start();
 // Ambil semua kategori
-$sql_categories = "SELECT id, name FROM categories";
+$sql_categories = "SELECT id, name, image FROM categories";
 $result_categories = mysqli_query($conn, $sql_categories);
 ?>
 
@@ -12,7 +12,6 @@ $result_categories = mysqli_query($conn, $sql_categories);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kategori - Sakurapai</title>
-    <link rel="stylesheet" href="../components/styles.css">
 <!-- ✅ Tailwind v4 (CDN resmi) -->
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <!-- ✅ Font Inter (Linux-friendly) -->
@@ -46,18 +45,31 @@ $result_categories = mysqli_query($conn, $sql_categories);
     <?php if (!isset($_GET['category_id'])): ?>
         <!-- Menampilkan daftar kategori jika tidak ada kategori yang dipilih -->
         <h1 class="text-center text-white">Daftar Kategori</h1>
-        <div class="grid grid-cols-4 gap-4">
-            <?php while ($category = mysqli_fetch_assoc($result_categories)): ?>
-                <div class="bg-sakura-400 rounded shadow h-30">
-                    <div class="card">
-                        <div class="card-body text-white">
-                            <h5 class="card-title"><?= htmlspecialchars($category['name']) ?></h5>
-                            <a href="category.php?category_id=<?= $category['id'] ?>" style='background-color:black; color:pink;' class="btn btn-pink btn-sm">Lihat Judul</a>
-                        </div>
-                    </div>
-                </div>
-            <?php endwhile; ?>
-        </div>
+        <div style="margin-left: 50px;" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+  <?php while ($category = mysqli_fetch_assoc($result_categories)): ?>
+    <div class="bg-sakura-400 rounded-lg shadow overflow-hidden">
+      <!-- Gambar (gunakan placeholder jika belum ada kolom image) -->
+      <div class="h-32 w-full bg-gray-200 flex items-center justify-center">
+      <?php if (!empty($category['image'])): ?>
+          <img src="../admin/uploads/categories/<?= htmlspecialchars($category['image']) ?>" 
+               alt="<?= htmlspecialchars($category['name']) ?>" 
+               class="w-full h-full object-cover">
+        <?php else: ?>
+          <span class="text-gray-500 text-sm">No Image</span>
+        <?php endif; ?>
+      </div>
+
+      <!-- Body card -->
+      <div class="p-3 text-white">
+        <h5 class="font-medium truncate"><?= htmlspecialchars($category['name']) ?></h5>
+        <a href="category.php?category_id=<?= (int)$category['id'] ?>" 
+           class="mt-2 inline-block w-full text-center text-xs font-semibold bg-black text-pink-300 py-1.5 rounded hover:bg-gray-800 transition">
+          Lihat Judul
+        </a>
+      </div>
+    </div>
+  <?php endwhile; ?>
+</div>
     <?php else: 
         $category_id = intval($_GET['category_id']);
         

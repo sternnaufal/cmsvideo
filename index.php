@@ -9,15 +9,15 @@ include 'components/function.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Video</title>
-<!-- ✅ Tailwind v4 (CDN resmi) -->
+<!-- Tailwind v4 (CDN resmi) -->
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-<!-- ✅ Font Inter (Linux-friendly) -->
+<!-- Font Inter -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<!-- ✅ Font Awesome -->
+<!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="icon" href="../assets/sakurapai.png" type="image/png">
 
-    <!-- ✅ Tailwind v4 Theme (via @theme) -->
+    <!-- Tailwind v4 Theme (via @theme) -->
     <style type="text/tailwindcss">
       @theme {
         --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Ubuntu, sans-serif;
@@ -38,7 +38,7 @@ include 'components/function.php';
     --shadow-sticky: 0 4px 12px -2px rgba(0,0,0,0.3), 0 8px 16px -4px rgba(255,102,178,0.1);
       }
     </style>
-    <!-- ✅ Custom styles (hanya yang tidak bisa di-handle @theme) -->
+    <!-- Custom styles (hanya yang tidak bisa di-handle @theme) -->
     <style>
       /* Modal & JS-dependent styles */
       .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 50; }
@@ -55,7 +55,7 @@ include 'components/function.php';
     </style>
 </head>
 <body class="bg-black text-white font-sans">
-   <!-- ✅ Navbar — versi premium sticky (disamakan) -->
+   <!-- Navbar — versi premium sticky (disamakan) -->
   <nav class="sticky top-0 z-50 bg-gray-950 border-b border-sakura-500/20 backdrop-blur-md shadow-[var(--shadow-sticky)]">
     <div class="container mx-auto px-4">
       <div class="flex items-center justify-between h-16 md:h-20">
@@ -123,7 +123,7 @@ include 'components/function.php';
     </div>
   </nav>
 
-  <!-- ✅ Mobile Menu (Full-Screen Drawer) -->
+  <!-- Mobile Menu (Full-Screen Drawer) -->
   <div id="mobileMenuBackdrop" class="fixed inset-0 bg-black/60 z-55 hidden transition-opacity duration-200"></div>
   <div id="mobileMenu" class="fixed inset-y-0 right-0 w-4/5 max-w-xs bg-gray-950 border-l border-sakura-500/20 shadow-2xl z-55 transform translate-x-full transition-transform duration-300 ease-in-out">
     <div class="flex flex-col h-full p-6">
@@ -328,7 +328,7 @@ include 'components/function.php';
 
   <?php include 'components/footer.php'; ?>
 
-  <!-- ✅ Vanilla JS (no Bootstrap, no extra lib) -->
+  <!-- Vanilla JS (no Bootstrap, no extra lib) -->
   <script>
     // Mobile menu
     const menuBtn = document.getElementById('mobileMenuButton');

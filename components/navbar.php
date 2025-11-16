@@ -31,8 +31,8 @@
     <div class="flex items-center justify-between h-16 md:h-20">
       <!-- Logo -->
       <a href="../index.php" class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-sakura-300 bg-clip-text text-transparent hover:opacity-90 transition-opacity">
-        Sakurapai
-      </a>
+          Sakurapai
+        </a>
 
       <!-- Desktop Nav -->
       <div class="hidden md:flex items-center gap-2 md:gap-4 ms-auto">
