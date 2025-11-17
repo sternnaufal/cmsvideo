@@ -1,199 +1,145 @@
 <?php
-include '../check_admin.php'; // Middleware untuk keamanan
-include '../../components/db.php'; // Koneksi ke database
-include 'getdata.php'; // ambil data umum
+include '../check_admin.php';
+include '../../components/db.php';
+include 'getdata.php';
 ?>
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: black;
-            /* Latar belakang hitam */
-            color: white;
-            /* Teks putih */
-        }
+    <link rel="icon" href="../../assets/sakurapai.png" type="image/png">
 
-        small {
-            color: white;
-        }
-
-        .navbar {
-            background-color: #2c3e50;
-            /* Gelap, hampir hitam */
-        }
-
-        .navbar-brand,
-        .nav-link {
-            color: #ff6f61 !important;
-            /* Warna pink pada navbar */
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #ffd700 !important;
-            /* Hover effect ke kuning */
-        }
-
-        .card {
-            box-shadow: 0 2px 1px rgba(0, 0, 0, 0.1);
-            background-color: white;
-            /* Latar belakang putih untuk card */
-        }
-
-        .card-header {
-            background-color: #ff6f61;
-            /* Header berwarna pink */
-            color: white;
-            /* Teks putih pada header */
-        }
-
-        .card-body {
-            background-color: black;
-            /* Latar belakang putih pada body card */
-            padding: 20px;
-            color: white;
-            /* Teks hitam pada body card */
-        }
-
-        .btn-primary {
-            background-color: #ff6f61;
-            border-color: #ff6f61;
-            color: white;
-            /* Teks putih pada tombol */
-        }
-
-        .btn-primary:hover {
-            background-color: #e74c3c;
-            border-color: #e74c3c;
-        }
-
-        .btn-info {
-            background-color: #3498db;
-            border-color: #3498db;
-            color: white;
-            /* Teks putih pada tombol info */
-        }
-
-        .btn-info:hover {
-            background-color: #2980b9;
-            border-color: #2980b9;
-        }
-
-        .chart-container {
-            margin-top: 20px;
-        }
-
-        .chart-container canvas {
-            max-width: 100% !important;
-        }
+    <style type="text/tailwindcss">
+      @theme {
+        --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+        --color-sakura-500: #ff6f61;
+        --color-sakura-600: #e55a50;
+        --color-sakura-300: #ffa3d1;
+        --color-gray-900: #121212;    /* navbar: solid black */
+        --color-gray-800: #1e1e1e;    /* card headers */
+        --color-gray-700: #2d2d2d;    /* borders & dividers */
+        --color-gray-600: #444;
+        --color-gray-400: #a0a0a0;
+        --color-gray-200: #e0e0e0;
+        --color-primary-500: #4dabf7; /* light blue, friendly */
+        --color-success-500: #51cf66;
+        --color-warning-500: #fcc419;
+        --color-danger-500: #ff6b6b;
+        --radius-lg: 0.75rem;   /* 12px */
+        --radius-xl: 1rem;      /* 16px */
+        --radius-2xl: 1.25rem;  /* 20px */
+        
+    --shadow-sticky: 0 4px 12px -2px rgba(0,0,0,0.3), 0 8px 16px -4px rgba(255,102,178,0.1);
+      
+      }
     </style>
 </head>
+<body class="bg-black text-gray-200 font-sans">
 
-<body>
+<nav class="sticky top-0 z-50 bg-gray-950 border-b border-sakura-500/20 backdrop-blur-md shadow-[var(--shadow-sticky)]">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16 md:h-20">
+      <a href="../../index.php" class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white to-sakura-300 bg-clip-text text-transparent hover:opacity-90 transition-opacity">
+          Sakurapai
+        </a>
+    <div class="hidden md:flex gap-4">
+        <a href="../../index.php"
+            class="px-4 py-2.5 text-white font-medium rounded-xl bg-gray-800/50 hover:bg-sakura-500/10 hover:text-sakura-300 transition-all duration-200 border border-transparent hover:border-sakura-500/30">
+            Home
+          </a>
+        <a href="../actions/upload.php" class="px-4 py-2.5 text-white font-medium rounded-xl bg-gray-800/50 hover:bg-sakura-500/10 hover:text-sakura-300 transition-all duration-200 border border-transparent hover:border-sakura-500/30">Unggah Video</a>
+        <a href="users_list.php" class="px-4 py-2.5 text-white font-medium rounded-xl bg-gray-800/50 hover:bg-sakura-500/10 hover:text-sakura-300 transition-all duration-200 border border-transparent hover:border-sakura-500/30">Pengguna</a>
+      </div>
+    </div>
+  </div>
+</nav>
 
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Dashboard Admin</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="../../index.php">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../actions/upload.php">Unggah Video</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="users_list.php">Pengguna</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <!-- Container -->
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Admin Dashboard</h1>
+    <main class="container mx-auto px-4 py-6">
+        <h1 class="text-2xl font-bold text-white mb-6">Admin Dashboard</h1>
 
-    <div class="row">
-        <!-- Statistik -->
-        <div class="col-md-4 mb-3">
-            <div class="card text-white bg-primary">
-                <div class="card-header">
-                    <h5>Total Video</h5>
+        <!-- Stat cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-gray-800 rounded-lg border border-gray-700">
+                <div class="px-4 py-3 bg-primary-500/10 border-b border-gray-700">
+                    <h3 class="font-semibold text-primary-400">Total Video</h3>
                 </div>
-                <div class="card-body">
-                    <p class="fs-4"><?= $total_videos ?> video</p>
+                <div class="p-4">
+                    <p class="text-2xl font-bold text-white"><?= $total_videos ?></p>
+                    <p class="text-gray-400 text-sm mt-1">video tersimpan</p>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4 mb-3">
-        <div class="card text-white bg-secondary">
-                <div class="card-header">
-                    <h5>Total Pengguna</h5>
+
+            <div class="bg-gray-800 rounded-lg border border-gray-700">
+                <div class="px-4 py-3 bg-secondary-500/10 border-b border-gray-700">
+                    <h3 class="font-semibold text-gray-300">Total Pengguna</h3>
                 </div>
-                <div class="card-body">
-                    <p class="fs-4"><?= $total_users ?> pengguna</p>
+                <div class="p-4">
+                    <p class="text-2xl font-bold text-white"><?= $total_users ?></p>
+                    <p class="text-gray-400 text-sm mt-1">akun terdaftar</p>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4 mb-3">
-        <div class="card text-white bg-success">
-                <div class="card-header">
-                    <h5>Video Terbaru</h5>
+
+            <div class="bg-gray-800 rounded-lg border border-gray-700">
+                <div class="px-4 py-3 bg-sakura-500/10 border-b border-gray-700">
+                    <h3 class="font-semibold text-sakura-400">Video Terbaru</h3>
                 </div>
-                <div class="card-body">
-                    <ul class="list-unstyled">
-                        <?php while ($video = mysqli_fetch_assoc($latest_videos)): ?>
-                            <li><?= $video['title'] ?> <small><br>(<?= $video['created_at'] ?>)</small></li>
+                <div class="p-4 max-h-32 overflow-y-auto">
+                    <ul class="space-y-1.5 text-sm">
+                        <?php 
+                        mysqli_data_seek($latest_videos, 0);
+                        while ($video = mysqli_fetch_assoc($latest_videos)): ?>
+                            <li class="text-gray-200">
+                                <span class="font-medium"><?= htmlspecialchars($video['title']) ?></span>
+                                <br><span class="text-gray-500 text-xs"><?= date('d M Y', strtotime($video['created_at'])) ?></span>
+                            </li>
                         <?php endwhile; ?>
                     </ul>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Grafik Statistik Video -->
-    <div class="row chart-container">
-        <div class="col-md-6 mb-3">
-        <div class="card text-white bg-danger">
-                <div class="card-header">
-                    <h5>Statistik Video</h5>
+        <!-- Chart & Recent Users -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+            <!-- Chart -->
+            <div class="bg-gray-800 rounded-lg border border-gray-700">
+                <div class="px-4 py-3 border-b border-gray-700">
+                    <h3 class="font-semibold text-white">Statistik Video (Views)</h3>
                 </div>
-                <div class="card-body">
-                    <canvas id="videoChart"></canvas>
+                <div class="p-4">
+                    <div class="h-60">
+                        <canvas id="videoChart"></canvas>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6 mb-3">
-        <div class="card text-white bg-warning">
-                <div class="card-header text-white">
-                    <h5>Pengguna Terbaru</h5>
+
+            <!-- Recent Users -->
+            <div class="bg-gray-800 rounded-lg border border-gray-700">
+                <div class="px-4 py-3 border-b border-gray-700">
+                    <h3 class="font-semibold text-white">Pengguna Terbaru</h3>
                 </div>
-                <div class="card-body">
-                    <table class="table table-striped table-dark">
-                        <thead>
+                <div class="p-4 overflow-y-auto max-h-60">
+                    <table class="w-full text-sm">
+                        <thead class="text-gray-400 border-b border-gray-700">
                             <tr>
-                                <th>Username</th>
-                                <th>Admin</th>
-                                <th>Premium</th>
+                                <th class="py-2 text-left">Username</th>
+                                <th class="py-2 text-left">Admin</th>
+                                <th class="py-2 text-left">Premium</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <?php while ($user = mysqli_fetch_assoc($latest_users)): ?>
+                        <tbody class="divide-y divide-gray-700">
+                            <?php 
+                            mysqli_data_seek($latest_users, 0);
+                            while ($user = mysqli_fetch_assoc($latest_users)): ?>
                                 <tr>
-                                    <td><?= $user['username'] ?></td>
-                                    <td><?= $user['is_admin'] == 1 ? 'Ya' : 'Tidak' ?></td>
-                                    <td><?= $user['is_premium'] == 1 ? 'Ya' : 'Tidak' ?></td>
+                                    <td class="py-2"><?= htmlspecialchars($user['username']) ?></td>
+                                    <td class="py-2"><?= $user['is_admin'] ? '<span class="text-success-500">✓</span>' : '—' ?></td>
+                                    <td class="py-2"><?= $user['is_premium'] ? '<span class="text-sakura-500">✓</span>' : '—' ?></td>
                                 </tr>
                             <?php endwhile; ?>
                         </tbody>
@@ -201,191 +147,134 @@ include 'getdata.php'; // ambil data umum
                 </div>
             </div>
         </div>
-    </div>
-        
-    <div class="row">
-        <!-- Card Jumlah Pengguna Premium -->
-        <div class="col-md-6 col-lg-3 mb-4">
-            <div class="card text-white bg-success">
-                <div class="card-header">
-                    Pengguna Premium
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title"><?php echo $totalPremium; ?> Pengguna</h5>
-                    <p class="card-text">Jumlah pengguna yang berlangganan premium.</p>
-                </div>
+
+        <!-- Summary cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <?php
+            $summary = [
+                ['label' => 'Pengguna Premium', 'value' => $totalPremium, 'color' => 'text-sakura-500'],
+                ['label' => 'Pengguna Biasa', 'value' => $totalBiasa, 'color' => 'text-gray-300'],
+                ['label' => 'Video Premium', 'value' => $premium_count, 'color' => 'text-sakura-500'],
+                ['label' => 'Video Biasa', 'value' => $biasa_count, 'color' => 'text-gray-300'],
+            ];
+            ?>
+            <?php foreach ($summary as $item): ?>
+            <div class="bg-gray-800 rounded-lg border border-gray-700 p-4">
+                <p class="text-gray-400 text-sm"><?= $item['label'] ?></p>
+                <p class="text-xl font-bold <?= $item['color'] ?> mt-1"><?= $item['value'] ?></p>
             </div>
+            <?php endforeach; ?>
         </div>
 
-        <!-- Card Jumlah Pengguna Biasa -->
-        <div class="col-md-6 col-lg-3 mb-4">
-            <div class="card text-white bg-info">
-                <div class="card-header">
-                    Pengguna Biasa
+        <!-- Video Likes/Dislikes -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+            <div class="bg-gray-800 rounded-lg border border-gray-700">
+                <div class="px-4 py-3 border-b border-gray-700">
+                    <h3 class="font-semibold text-success-500">5 Video Terlike</h3>
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title"><?php echo $totalBiasa; ?> Pengguna</h5>
-                    <p class="card-text">Jumlah pengguna yang tidak berlangganan premium.</p>
-                </div>
-            </div>
-        </div>
-            <!-- Card Jumlah Video Premium -->
-        <div class="col-md-3 mb-4">
-        <div class="card text-white bg-info">
-                <div class="card-header">
-                <h5 class="card-title">Jumlah Video Premium</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text"><?= $premium_count ?> Video</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card Jumlah Video Biasa -->
-        <div class="col-md-3 mb-4">
-        <div class="card text-white bg-light">
-                <div class="card-header">
-                <h5 class="card-title">Jumlah Video Biasa</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text"><?= $biasa_count ?> Video</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Jumlah Video Per Kategori -->
-    <div class="row">
-        <div class="col-md-12 mb-3">
-        <div class="card text-white bg-light">
-                <div class="card-header text-white">
-                    <h5>Jumlah Video Per Kategori</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <?php
-                            foreach ($categories as $category) {
-                                $sql = "SELECT c.name AS category_name, COUNT(v.id) AS video_count
-                                        FROM categories c
-                                        LEFT JOIN video_categories vc ON c.id = vc.category_id
-                                        LEFT JOIN videos v ON vc.video_id = v.id
-                                        GROUP BY c.id
-                                        LIMIT {$category['limit']} OFFSET {$category['offset']}";
-                                $result = $conn->query($sql);
-                        ?>
-                        <div class="col-md-3">
-                            <table class="table table-dark table-striped">
-                                <thead>
-                                    <tr>
-                                        <th style="color: #ff4081;">Kategori</th>
-                                        <th style="color: #ff4081;">Jumlah</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if ($result->num_rows > 0): ?>
-                                        <?php while ($row = $result->fetch_assoc()): ?>
-                                            <tr>
-                                                <td style="color: #ff4081;"><?= htmlspecialchars($row['category_name']) ?></td>
-                                                <td><?= $row['video_count'] ?></td>
-                                            </tr>
-                                        <?php endwhile; ?>
-                                    <?php else: ?>
-                                        <tr><td colspan="2" class="text-center" style="color: #ff4081;">Tidak ada data.</td></tr>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                        <?php } ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Video Terlike dan Terdislike -->
-    <div class="row">
-        <div class="col-md-6 mb-3">
-        <div class="card text-white bg-success">
-                <div class="card-header">
-                    <h5>5 Video Terlike</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled">
-                        <?php while ($video = mysqli_fetch_assoc($top_liked_videos)): ?>
-                            <li><?= $video['title'] ?> <br> Likes: <?= $video['likes'] ?> | Dislikes: <?= $video['dislikes'] ?></li>
+                <div class="p-4">
+                    <ul class="space-y-2 text-sm">
+                        <?php 
+                        mysqli_data_seek($top_liked_videos, 0);
+                        while ($video = mysqli_fetch_assoc($top_liked_videos)): ?>
+                            <li class="border-l-2 border-success-500/30 pl-2">
+                                <div class="font-medium"><?= htmlspecialchars($video['title']) ?></div>
+                                <div class="text-gray-400">👍 <?= $video['likes'] ?> &nbsp;|&nbsp; 👎 <?= $video['dislikes'] ?></div>
+                            </li>
                         <?php endwhile; ?>
                     </ul>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6 mb-3">
-        <div class="card text-white bg-danger">
-                <div class="card-header text-white">
-                    <h5>5 Video Terdislike</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled">
-                        <?php while ($video = mysqli_fetch_assoc($top_disliked_videos)): ?>
-                            <li><?= $video['title'] ?> <br> Likes: <?= $video['likes'] ?> | Dislikes: <?= $video['dislikes'] ?></li>
-                        <?php endwhile; ?>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Komentar Terbaru -->
-    <div class="row">
-        <div class="col-md-6 mb-3">
-        <div class="card text-white bg-info">
-                <div class="card-header text-white">
-                    <h5>Komentar Terbaru</h5>
+            <div class="bg-gray-800 rounded-lg border border-gray-700">
+                <div class="px-4 py-3 border-b border-gray-700">
+                    <h3 class="font-semibold text-danger-500">5 Video Terdislike</h3>
                 </div>
-                <div class="card-body">
-                    <ul class="list-unstyled">
-                        <?php while ($comment = mysqli_fetch_assoc($latest_comments)): ?>
-                            <li>
-                                <strong><?= $comment['username'] ?> (<?= $comment['video_title'] ?>)</strong><br>
-                                <small class="text-muted"><?= $comment['created_at'] ?></small>
-                                <p><?= $comment['comment'] ?></p>
+                <div class="p-4">
+                    <ul class="space-y-2 text-sm">
+                        <?php 
+                        mysqli_data_seek($top_disliked_videos, 0);
+                        while ($video = mysqli_fetch_assoc($top_disliked_videos)): ?>
+                            <li class="border-l-2 border-danger-500/30 pl-2">
+                                <div class="font-medium"><?= htmlspecialchars($video['title']) ?></div>
+                                <div class="text-gray-400">👍 <?= $video['likes'] ?> &nbsp;|&nbsp; 👎 <?= $video['dislikes'] ?></div>
                             </li>
                         <?php endwhile; ?>
                     </ul>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Navigasi cepat -->
-    <div class="mt-4">
-        <a href="../actions/upload.php" class="btn btn-primary">Unggah Video Baru</a>
-        <a href="videos_list.php" class="btn btn-secondary">Lihat Semua Video</a>
-        <a href="users_list.php" class="btn btn-info">Lihat Semua Pengguna</a>
-    </div>
-</div>
+        <!-- Recent Comments -->
+        <div class="bg-gray-800 rounded-lg border border-gray-700 mb-6">
+            <div class="px-4 py-3 border-b border-gray-700">
+                <h3 class="font-semibold text-white">Komentar Terbaru</h3>
+            </div>
+            <div class="p-4 max-h-60 overflow-y-auto">
+                <ul class="space-y-3">
+                    <?php 
+                    mysqli_data_seek($latest_comments, 0);
+                    while ($comment = mysqli_fetch_assoc($latest_comments)): ?>
+                        <li class="text-sm pb-3 border-b border-gray-700 last:border-0 last:pb-0">
+                            <div class="flex justify-between">
+                                <span class="font-medium text-gray-200"><?= htmlspecialchars($comment['username']) ?></span>
+                                <span class="text-gray-500 text-xs"><?= date('d M', strtotime($comment['created_at'])) ?></span>
+                            </div>
+                            <div class="mt-1 text-gray-300">“<?= htmlspecialchars(substr($comment['comment'], 0, 70)) ?><?= strlen($comment['comment']) > 70 ? '…' : '' ?>”</div>
+                            <div class="text-xs text-sakura-500/80 mt-1">→ <?= htmlspecialchars($comment['video_title']) ?></div>
+                        </li>
+                    <?php endwhile; ?>
+                </ul>
+            </div>
+        </div>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Quick Actions -->
+        <div class="flex flex-wrap gap-3 justify-center mb-6">
+            <a href="../actions/upload.php" class="px-5 py-2.5 bg-sakura-500 hover:bg-sakura-600 text-white font-medium rounded-md transition">
+                <i class="fas fa-upload me-2"></i>Unggah Video Baru
+            </a>
+            <a href="videos_list.php" class="px-5 py-2.5 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-md transition">
+                <i class="fas fa-list me-2"></i>Lihat Semua Video
+            </a>
+            <a href="users_list.php" class="px-5 py-2.5 bg-gray-700 hover:bg-gray-600 text-white font-medium rounded-md transition">
+                <i class="fas fa-users me-2"></i>Lihat Semua Pengguna
+            </a>
+        </div>
+    </main>
 
-    <!-- Chart.js -->
     <script>
         var ctx = document.getElementById('videoChart').getContext('2d');
         var videoChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: <?php echo json_encode($video_titles); ?>, // Judul video dari database
+                labels: <?php echo json_encode(array_map('htmlspecialchars', $video_titles)); ?>,
                 datasets: [{
-                    label: 'Total Views per Video',
-                    data: <?php echo json_encode($view_counts); ?>, // Total views per video dari database
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
+                    label: 'Views',
+                    data: <?php echo json_encode($view_counts); ?>,
+                    backgroundColor: 'rgba(77, 171, 247, 0.2)',
+                    borderColor: '#4dabf7',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    borderSkipped: false
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: { color: '#a0a0a0' }
+                    }
+                },
                 scales: {
+                    x: {
+                        ticks: { color: '#a0a0a0' },
+                        grid: { color: 'rgba(100,100,100,0.1)' }
+                    },
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: { color: '#a0a0a0' },
+                        grid: { color: 'rgba(100,100,100,0.1)' }
                     }
                 }
             }
@@ -393,5 +282,4 @@ include 'getdata.php'; // ambil data umum
     </script>
 
 </body>
-
 </html>

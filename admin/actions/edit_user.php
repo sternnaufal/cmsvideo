@@ -89,14 +89,14 @@ if (isset($_GET['id'])) {
         <div class="row mb-3">
             <label for="subscription_start" class="col-sm-2 col-form-label">Tanggal Mulai Langganan</label>
             <div class="col-sm-10">
-                <input type="date" class="form-control" name="subscription_start" value="<?= $user['subscription_start'] ?>" required>
+                <input type="date" class="form-control" name="subscription_start" value="<?= $user['subscription_start'] ?>">
             </div>
         </div>
 
         <div class="row mb-3">
             <label for="subscription_end" class="col-sm-2 col-form-label">Tanggal Akhir Langganan</label>
             <div class="col-sm-10">
-                <input type="date" class="form-control" name="subscription_end" value="<?= $user['subscription_end'] ?>" required>
+                <input type="date" class="form-control" name="subscription_end" value="<?= $user['subscription_end'] ?>">
             </div>
         </div>
 
